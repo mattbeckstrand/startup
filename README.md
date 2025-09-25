@@ -12,3 +12,14 @@ In a day with so much music being released and so many different options to list
 
 ### Mockup:
 ![Mockup](Images/Mockup.jpg)
+
+##HTML Deliverable
+- [] HTML Pages: There are pages for dms, profile, samples, signin, and my home page
+- [] Ptoper HTML element usage: I used the header and nav bar on all pages, body to put the main content in, divs to separate concerns, tables mostly for structure, and footers. 
+- [] Links: I linked my github page, and all the html pages together
+- [] Text: I used text to show different info
+- [] 3rd Party Placeholders: I am going to pull the listening history from apple music and new releases
+- [] Images: I have album covers and profile placeholders
+- [] Login Placeholder: it is in the top right on the homepage
+- [] DB data placeholder: all the album covers and reviews will come from the database
+- [] Websocket placeholder: This is in the messages
