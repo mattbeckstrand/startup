@@ -1,0 +1,27 @@
+{
+  "name": "startup",
+  "version": "1.0.0",
+  "description": "## Elevator Pitch In a day with so much music being released and so many different options to listen, how do you discover your music identity? I am going to build Snare, a music discovery platform where you share your music listening history and reviews with your friends.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "tailwindcss-cli -i ./src/input.css -o ./dist/output.css --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mattbeckstrand/startup.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mattbeckstrand/startup/issues"
+  },
+  "homepage": "https://github.com/mattbeckstrand/startup#readme",
+  "devDependencies": {
+    "autoprefixer": "^10.4.21",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.14",
+    "tailwindcss-cli": "^0.1.2"
+  }
+}
