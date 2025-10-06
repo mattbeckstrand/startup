@@ -23,3 +23,8 @@ In a day with so much music being released and so many different options to list
 - [] Login Placeholder: it is in the top right on the homepage
 - [] DB data placeholder: all the album covers and reviews will come from the database
 - [] Websocket placeholder: This is in the messages
+
+
+
+## CSS Deliverable
+- Went through and styled each page. 
