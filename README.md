@@ -28,3 +28,9 @@ In a day with so much music being released and so many different options to list
 
 ## CSS Deliverable
 - Went through and styled each page. 
+- Overall: I changed the background to gray and the text to white and made all the links to other pages blue and used tailwind.css
+- Homepage: I used a flex class to style the new releases and the revies. Added my name and github to the footer
+- Sign in: I implemented a simple sign in page and styled the boxes to be white and the sign in button to be blue
+- Samples: I just set all of them to be centered and rounded the photos to give it a cool prestine look.
+- Dms: I put the dm in a flex container and added a background of blue a so you could see that you could click anywhere to go into the message
+- Profile: Profile has two flexboxes one horizontal and one vertical for the top followers and listening history buttons and the other for the users reviews
