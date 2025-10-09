@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "## Elevator Pitch In a day with so much music being released and so many different options to listen, how do you discover your music identity? I am going to build Snare, a music discovery platform where you share your music listening history and reviews with your friends.",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -20,6 +21,7 @@
   },
   "homepage": "https://github.com/mattbeckstrand/startup#readme",
   "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.14",
     "autoprefixer": "^10.4.21",
     "postcss": "^8.5.6",
     "tailwindcss": "^4.1.14",
@@ -27,9 +29,7 @@
     "vite": "^7.1.9"
   },
   "dependencies": {
-    "bootstrap": "^5.3.8",
     "react": "^19.2.0",
-    "react-bootstrap": "^2.10.10",
     "react-dom": "^19.2.0",
     "react-router-dom": "^7.9.4"
   }
