@@ -5,6 +5,7 @@ import { SignIn } from './signin/signin';
 import { Dms } from './dms/dms';
 import { Profile } from './profile/profile';
 import { Samples } from './samples/samples';
+import { Home } from './home/home';
 
 export default function App() {
   return (
@@ -29,7 +30,7 @@ export default function App() {
         <hr />
 
         <Routes>
-          <Route path="/" element={<SignIn />} exact />
+          <Route path="/" element={<Home />} exact />
           <Route path="/samples" element={<Samples />} />
           <Route path="/dms" element={<Dms />} />
           <Route path="/profile" element={<Profile />} />

@@ -36,4 +36,5 @@ In a day with so much music being released and so many different options to list
 - Profile: Profile has two flexboxes one horizontal and one vertical for the top followers and listening history buttons and the other for the users reviews
 
 ## React P1 deliverable
-- For React P1 I went through and edited my structure just a bit and started using .jsx files. I have been using Tailwind so for my css I didn't have to change much other than switchign the version I was using in my postcss.confic.js file and the input .css file. Other than that I switched the deploy file to deploy react instead of files. 
+- I first followed the steps for the simon react p1 and deployed that to my server
+- I went through and edited my structure just a bit and started using .jsx files. I have been using Tailwind so for my css I didn't have to change much other than switchign the version I was using in my postcss.confic.js file and the input .css file. Other than that I switched the deploy file to deploy react instead of files. 
