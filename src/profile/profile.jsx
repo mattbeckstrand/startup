@@ -1,21 +1,24 @@
-import { useEffect } from "react";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 
 export function Profile() {
 
-  const [username, setUsername] = useState('loading...');
-  const [displayName, setDisplayName] = useState('loading...');
-  const [reviews, setReviews] = useState([])
+  const [profile, setProfile] = useState({});
+  const [reviews, setReviews] = useState([]);
+  const [followers, setFollowers] = useState();
+  const [following, setFollowing] = useState();
 
 
   useEffect(() => {
-    setUsername('mattbeckstrand');
-    setDisplayName('Matt Beckstrand');
-    setReviews([{id: 1, title:'Swag', artist:'Justin Bieber', album: 'Swag', rating: 4, artworkLocation: '/Images/Swag.png', text:"I thought this album was good but I didn't think it was amazing. Justin Bieber had 3 good songs in this."},
-      {id: 2, title:'Swag II', artist:'Justin Bieber', album: 'Swag II', rating: 2, artworkLocation: '/Images/Swag.png', text:"Has some good parts but ultimately not as good as Swag I"
-      }
-    ])
+    setProfile({id: 'xyz', username: 'mattbeckstrand', displayName: 'Matt Beckstrand', avatarLocation:'/Images/IMG_2769.jpg', bio:'Nothing better than finding a new song'})
+    setReviews(
+      [
+        {id: 1, title:'Swag', artist:'Justin Bieber', album: 'Swag', rating: 4, artworkLocation: '/Images/Swag.png', text:"I thought this album was good but I didn't think it was amazing. Justin Bieber had 3 good songs in this."},
+      {id: 2, title:'Swag II', artist:'Justin Bieber', album: 'Swag II', rating: 2, artworkLocation: '/Images/Swag.png', text:"Has some good parts but ultimately not as good as Swag I"}
+    ]
+    ),
+    setFollowers(10),
+    setFollowing(10)
   }, [])
 
   function renderStars(rating) {
@@ -27,14 +30,14 @@ export function Profile() {
   return (
     <main className="p-4">
       <div className="flex items-center space-x-6 mb-6">
-        <img src="/Images/IMG_2769.jpg" alt="Profile" className="w-20 h-20 rounded-full" />
+        <img src={profile.avatarLocation} alt="Profile" className="w-20 h-20 rounded-full" />
         <div>
-          <h2 className="text-2xl font-bold">{displayName}</h2>
-          <p className="text-gray-300">{username}</p>
+          <h2 className="text-2xl font-bold">{profile.displayName}</h2>
+          <p className="text-gray-300">{profile.username}</p>
         </div>
         <div className="flex space-x-6 ml-auto">
-          <span>Followers 10</span>
-          <span>Following 3</span>
+          <span>{'Followers' + followers}</span>
+          <span>{'Following' +  following}</span>
           <span>Listening History</span>
         </div>
       </div>
