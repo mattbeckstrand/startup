@@ -44,17 +44,18 @@ export function Profile() {
       <hr />
       <div className="mt-4">
         {reviews.map((review) =>
-        (<div key={review.id}>
-          <div className="flex items-center space-x-2 mb-3">
-          <img src="/Images/ProfileIcon.webp" alt="Profile" width="26" height="26" className="rounded-full" />
-          <span className="font-semibold">{username}</span>
-        </div>
-        <img src={review.artworkLocation} alt={review.title + '-'  + review.artist} width="200" className="rounded-lg mb-2" />
-        <p className="font-semibold">{review.title}</p>
-        <p className="text-yellow-400">{renderStars(review.rating)}</p>
-        <p className="text-gray-300">{review.text}</p>
-        </div>
-        ))}
+          (<div key={review.id}>
+            <div className="flex items-center space-x-2 mb-3">
+            <img src="/Images/ProfileIcon.webp" alt="Profile" width="26" height="26" className="rounded-full" />
+            <span className="font-semibold">{review.username}</span>
+          </div>
+          <img src={review.artworkLocation} alt={review.title + '-'  + review.artist} width="200" className="rounded-lg mb-2" />
+          <p className="font-semibold">{review.title}</p>
+          <p className="text-yellow-400">{renderStars(review.rating)}</p>
+          <p className="text-gray-300">{review.text}</p>
+          </div>
+          ))
+        }
         </div>
     </main>
   );
