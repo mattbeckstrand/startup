@@ -40,4 +40,4 @@ In a day with so much music being released and so many different options to list
 - I went through and edited my structure just a bit and started using .jsx files. I have been using Tailwind so for my css I didn't have to change much other than switchign the version I was using in my postcss.confic.js file and the input .css file. Other than that I switched the deploy file to deploy react instead of files. 
 
 ## React deliverable
-- Profile, I went through and made it so that when I am ready to switch to the database, all I will have to change is the way I am setting the values and change the set function to call the database and then it will be good. Including the reviews and profile stuff.
+- I went through and changed all the places where there would be data to be set by react code. Next all I have to do is write the functions to interact with the database and then it will work with live data.
