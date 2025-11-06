@@ -6,8 +6,11 @@ import { Dms } from './dms/dms';
 import { Profile } from './profile/profile';
 import { Samples } from './samples/samples';
 import { Home } from './home/home';
+import { useAuth } from './context/authContext';
 
 export default function App() {
+  const { user, isAuthenticated, logout } = useAuth();
+
   return (
     <BrowserRouter>
       <div className="min-h-screen flex flex-col" style={{ background: 'rgb(48, 46, 46)' }}>
@@ -20,7 +23,14 @@ export default function App() {
               <NavLink to="/dms">Messages</NavLink>
             </div>
             <div className="flex space-x-6">
-              <NavLink to="/signin">Sign In</NavLink>
+              {isAuthenticated ? (
+                <>
+                  <span>Welcome, {user.email}</span>
+                  <button onClick={logout}>Logout</button>
+                </>
+              ) : (
+                <NavLink to="/signin">Sign In</NavLink>
+              )}
               <NavLink to="/profile">
                 <img src="/Images/IMG_2769.jpg" alt="Profile" width="40" height="40" className="rounded-full" />
               </NavLink>
