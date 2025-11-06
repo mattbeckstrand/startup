@@ -1,39 +1,31 @@
 import React, { useEffect, useState} from 'react';
+import { useSongs } from '../hooks/useSongs';
 
 export function Samples() {
-  const [samples, setSamples] = useState([])
-
-  const hcSamples = [
-    {title:'Play', album:'Play', artist:'Ed Sheeran', artworkLocation: '/Images/play.webp' },
-    {title:'Swag', album:'Swag', artist:'Justin Bieber', artworkLocation: '/Images/Swag.png' }
-  ]
-
-  useEffect(() => {
-    return(
-      setSamples(hcSamples)
-    )
-  }, [])
+  const { songs, loading: samplesLoading} = useSongs();
 
   return (
     <main>
       <div className="text-center">
         <h1 className="text-3xl">Samples</h1>
       </div>
-      {samples.map((sample) => {
-        return(
-          <div>
-            <div className='flex justify-center'>
-            <img src={sample.artworkLocation} alt={sample.title + ' - ' + sample.artist} width="350" className="rounded-lg" />
+      {samplesLoading ? (
+          <p>Samples Loading</p>
+        ) : ( songs.map((song) => {
+          return(
+            <div>
+              <div className='flex justify-center'>
+              <img src={song.artworkUrl} alt={song.title + ' - ' + song.artist} width="350" className="rounded-lg" />
+              </div>
+              <br/>
+              <div className='text-center'>
+              {song.title + ' - ' + song.artist}
+              <p>▶</p>
+              <p>Add to library +</p>
+              </div>
             </div>
-            <br/>
-            <div className='text-center'>
-            {sample.title + ' - ' + sample.artist}
-            <p>▶</p>
-            <p>Add to library +</p>
-            </div>
-          </div>
-        )})
-        }
+          )})
+        )}
     </main>
   );
 }

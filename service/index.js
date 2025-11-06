@@ -6,6 +6,7 @@ const port = process.argv.length > 2 ? process.argv[2] : 4000;
 
 const authRouter = require('./routes/auth');
 const spotifyRouter = require('./routes/spotify');
+const songsRouter = require('./routes/songs');
 
 app.use(cors());
 app.use(express.json());
@@ -13,6 +14,7 @@ app.use(express.static('public'));
 
 app.use('/api/auth', authRouter);
 app.use('/api/spotify', spotifyRouter);
+app.use('/api/songs', songsRouter)
 
 app.use((req, res) => {
   res.status(404).send({ msg: 'Not found' });
