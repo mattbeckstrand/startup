@@ -10,7 +10,7 @@ export function useSongs() {
         if (!token) return;
 
         try {
-            const response = await fetch('http://localhost:4000/api/songs/samples');
+            const response = await fetch('/api/songs/samples');
             const dbSongs = await response.json();
             
             if (!Array.isArray(dbSongs)) {

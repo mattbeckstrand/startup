@@ -11,7 +11,7 @@ export function useReviews() {
             if(!token) return;
 
             try{
-                const response = await fetch('http://localhost:4000/api/songs/reviews');
+                const response = await fetch('/api/songs/reviews');
                 const dbReviews = await response.json();
 
                 const reviewsWithArtwork = await Promise.all(

@@ -10,7 +10,7 @@ export function useAlbums() {
         if (!token) return;
 
         try {
-            const response = await fetch('http://localhost:4000/api/songs/newReleases');
+            const response = await fetch('/api/songs/newReleases');
             const dbAlbums = await response.json();
             
             if (!Array.isArray(dbAlbums)) {

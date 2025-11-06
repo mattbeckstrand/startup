@@ -12,7 +12,7 @@ export function useMyReviews() {
         if (!spotifyToken || !authToken) return;
 
         try {
-            const response = await fetch('http://localhost:4000/api/songs/reviews/my', {
+            const response = await fetch('/api/songs/reviews/my', {
                 headers: {
                     'Authorization': `Bearer ${authToken}`
                 }

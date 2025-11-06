@@ -41,3 +41,6 @@ In a day with so much music being released and so many different options to list
 
 ## React deliverable
 - I went through and changed all the places where there would be data to be set by react code. Next all I have to do is write the functions to interact with the database and then it will work with live data.
+
+## Service Deliverable:
+- For this deliverable I went through and added in the backend. I added functions for auth, returning data for new releases, reviews and also used spotify as my third party service to display artwork. I then edited the front end to use those endpoints to display data. My protected endpoint is the endpoint where it returns only your reviews, this shown on profile. 
