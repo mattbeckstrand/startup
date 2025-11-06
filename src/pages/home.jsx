@@ -1,21 +1,42 @@
 import React, { useEffect, useState} from 'react';
+import { useSpotify, searchSongs } from '../spotify';
 
 export function Home() {
+  const token = useSpotify();
+  const [artworkUrl, setArtworkUrl] = useState(null);
   const [newReleases, setNewReleases] = useState([]);
-  const [reviews, setReviews] = useState([])
-
+  const [reviews, setReviews] = useState([]);
+  
   function renderStars(rating) {
     const filled = '★'.repeat(rating);
     const unFilled = '☆'.repeat(5 - rating);
     return filled + unFilled;
   }
 
+
+  useEffect(() => {
+    const loadSong = async () => {
+      if (!token) return;
+      try {
+        const songs = await searchSongs(token, "Shake it off Taylor Swift");
+        
+        if (songs && songs.length > 0) {
+          setArtworkUrl(songs[0].album.images[0].url); 
+        }
+      } catch (error) {
+        console.error('Failed to load song:', error);
+      }
+    };
+    loadSong();
+  }, [token])
+  
   const releases = [
     {title: 'Play', artist: 'Ed Sheeran', artworkLocation: '/Images/play.webp'},
     {title: 'Swag', artist: 'Justin Bieber', artworkLocation: '/Images/Swag.png'},
     {title: 'Blonde', artist: 'Frank Ocean', artworkLocation: '/Images/blonge.jpeg'},
     {title: 'Beloved', artist: 'GIVĒON', artworkLocation: '/Images/Beloved.jpg'}
   ]
+
 
 
   const hcReviews = [
@@ -27,11 +48,18 @@ export function Home() {
     setNewReleases(releases),
     setReviews(hcReviews)
   }, [])
+
+
   return (
     <main>
+      {artworkUrl ? (
+              <img src={artworkUrl} alt="Album artwork" className="w-64" />
+            ) : (
+              <p>Loading...</p>
+            )}
         <section>
-        <h2>New Releases</h2>
-        <div className="flex space-x-6"> 
+        <h2 className="px-2">New Releases</h2>
+        <div className="flex space-x-6 px-4"> 
             {newReleases.map((release) => {
               return(
               <div className="w-60 text-center">
@@ -43,7 +71,7 @@ export function Home() {
         </div>      
     </section>
         <hr/>
-        <div class="p-4">
+        <div className="p-4">
           {reviews.map((review) => {
             return(
               <div>

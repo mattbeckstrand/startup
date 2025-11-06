@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter, NavLink, Route, Routes } from 'react-router-dom';
 import './input.css';
-import { SignIn } from './signin/signin';
-import { Dms } from './dms/dms';
-import { Profile } from './profile/profile';
-import { Samples } from './samples/samples';
-import { Home } from './home/home';
+import { SignIn } from './pages/signin';
+import { Dms } from './pages/dms';
+import { Profile } from './pages/profile';
+import { Samples } from './pages/samples';
+import { Home } from './pages/home';
 import { useAuth } from './context/authContext';
 
 export default function App() {
@@ -13,7 +13,7 @@ export default function App() {
 
   return (
     <BrowserRouter>
-      <div className="min-h-screen flex flex-col" style={{ background: 'rgb(48, 46, 46)' }}>
+      <div className="min-h-screen flex flex-col text-white" style={{ background: 'rgb(48, 46, 46)' }}>
         <header>
           <h1 className="text-4xl p-4">Snare Music</h1>
           <nav className="flex items-center justify-between p-4">
@@ -25,15 +25,15 @@ export default function App() {
             <div className="flex space-x-6">
               {isAuthenticated ? (
                 <>
-                  <span>Welcome, {user.email}</span>
+                  <NavLink to="/profile">
+                    <img src="/Images/IMG_2769.jpg" alt="Profile" width="40" height="40" className="rounded-full" />
+                  </NavLink>
                   <button onClick={logout}>Logout</button>
                 </>
               ) : (
                 <NavLink to="/signin">Sign In</NavLink>
               )}
-              <NavLink to="/profile">
-                <img src="/Images/IMG_2769.jpg" alt="Profile" width="40" height="40" className="rounded-full" />
-              </NavLink>
+            
             </div>
           </nav>
         </header>
