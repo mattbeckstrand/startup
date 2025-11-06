@@ -13,7 +13,8 @@ router.post('/login', async(req, res) => {
     if (error) {
         return res.status(400).send({error: error.message});
     }
-    res.send({user: data.user});
+    // Send both user and session (session contains the access_token)
+    res.send({user: data.user, session: data.session});
 })
 
 router.post('/signup', async(req, res) => {
@@ -25,7 +26,8 @@ router.post('/signup', async(req, res) => {
     if (error) {
         return res.status(400).send({error: error.message});
     }
-    res.send({user: data.user});
+    // Send both user and session (session contains the access_token)
+    res.send({user: data.user, session: data.session});
 })
 
 module.exports = router;

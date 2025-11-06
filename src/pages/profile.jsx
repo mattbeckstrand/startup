@@ -1,22 +1,16 @@
 import React, { useState, useEffect } from 'react';
+import { useMyReviews } from '../hooks/useMyReviews';
 
 
 export function Profile() {
-
+  const {reviews, loading: reviewsLoading} = useMyReviews();
   const [profile, setProfile] = useState({});
-  const [reviews, setReviews] = useState([]);
   const [followers, setFollowers] = useState();
   const [following, setFollowing] = useState();
 
 
   useEffect(() => {
     setProfile({id: 'xyz', username: 'mattbeckstrand', displayName: 'Matt Beckstrand', avatarLocation:'/Images/IMG_2769.jpg', bio:'Nothing better than finding a new song'})
-    setReviews(
-      [
-        {id: 1, title:'Swag', artist:'Justin Bieber', album: 'Swag', rating: 4, artworkLocation: '/Images/Swag.png', text:"I thought this album was good but I didn't think it was amazing. Justin Bieber had 3 good songs in this."},
-      {id: 2, title:'Swag II', artist:'Justin Bieber', album: 'Swag II', rating: 2, artworkLocation: '/Images/Swag.png', text:"Has some good parts but ultimately not as good as Swag I"}
-    ]
-    ),
     setFollowers(10),
     setFollowing(10)
   }, [])
@@ -43,21 +37,22 @@ export function Profile() {
       </div>
       <hr />
       <div className="mt-4">
-        {reviews.map((review) =>
+        {reviewsLoading? (
+          <p>ReviewsLoading</p>
+        ) : ( reviews.map((review) =>
           (<div key={review.id}>
             <div className="flex items-center space-x-2 mb-3">
             <img src="/Images/ProfileIcon.webp" alt="Profile" width="26" height="26" className="rounded-full" />
             <span className="font-semibold">{review.username}</span>
           </div>
-          <img src={review.artworkLocation} alt={review.title + '-'  + review.artist} width="200" className="rounded-lg mb-2" />
+          <img src={review.artworkUrl} alt={review.title + '-'  + review.artist} width="200" className="rounded-lg mb-2" />
           <p className="font-semibold">{review.title}</p>
           <p className="text-yellow-400">{renderStars(review.rating)}</p>
           <p className="text-gray-300">{review.text}</p>
           </div>
           ))
-        }
+        )}
         </div>
     </main>
   );
 }
-

@@ -4,12 +4,17 @@ const AuthContext = createContext()
 
 export function AuthProvider({ children }) {
     const [user, setUser] = useState(null);
+    const [token, setToken] = useState(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const savedUser = localStorage.getItem('user');
+        const savedToken = localStorage.getItem('token');
         if (savedUser) {
             setUser(JSON.parse(savedUser));
+        }
+        if (savedToken) {
+            setToken(savedToken);
         }
         setLoading(false);
     }, []);
@@ -25,8 +30,15 @@ export function AuthProvider({ children }) {
         if (!response.ok) {
             throw new Error(data.error || 'Login failed');
         }
+        
         setUser(data.user);
         localStorage.setItem('user', JSON.stringify(data.user));
+        const authToken = data.session?.access_token;
+        if (authToken) {
+            setToken(authToken);
+            localStorage.setItem('token', authToken);
+        }
+        
         return data.user;
     }
 
@@ -37,23 +49,35 @@ export function AuthProvider({ children }) {
             body: JSON.stringify({email, password})
         })
 
-        const data = await response.json
+        const data = await response.json();
 
         if (!response.ok) {
             throw new Error(data.error || "sign in didnt work")
         }
+        
         setUser(data.user);
         localStorage.setItem('user', JSON.stringify(data.user));
+        
+        // Extract token from session
+        const authToken = data.session?.access_token;
+        if (authToken) {
+            setToken(authToken);
+            localStorage.setItem('token', authToken);
+        }
+        
         return data.user;
     }
 
     const logout = () => {
         setUser(null);
+        setToken(null);
         localStorage.removeItem('user');
+        localStorage.removeItem('token');
     }
 
     const value = {
         user,
+        token,
         isAuthenticated: !!user,
         loading, 
         login,
