@@ -21,7 +21,7 @@ export function Samples() {
               <div className='text-center'>
               {song.title + ' - ' + song.artist}
               <p>▶</p>
-              <p>Add to library +</p>
+              <p>+ Add to library</p>
               </div>
             </div>
           )})
@@ -30,3 +30,6 @@ export function Samples() {
   );
 }
 
+
+
+  

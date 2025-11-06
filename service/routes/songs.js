@@ -28,4 +28,19 @@ router.get('/reviews', async (req, res) => {
     }
 });
 
+
+router.get('/samples', async (req, res) => {
+    try{
+        const hcSamples = [
+            {title:'A Little More', album:'Play', artist:'Ed Sheeran', artworkLocation: '/Images/play.webp' },
+            {title:'Daisies', album:'Swag', artist:'Justin Bieber', artworkLocation: '/Images/Swag.png' }
+          ];
+          res.json(hcSamples)
+    } catch (error) {
+        res.status(500).json({error: 'Failed to fetch reviews'})
+    }
+});
+
+
+
 module.exports = router

@@ -1,6 +1,5 @@
 import React, { useEffect, useState} from 'react';
-import { searchAlbums } from '../spotify';
-import { useSongs } from '../hooks/useAlbums';
+import { useAlbums } from '../hooks/useAlbums';
 import { useReviews } from '../hooks/useReviews';
 
 export function Home() {
@@ -19,7 +18,7 @@ export function Home() {
         <section>
         <h2 className="px-2">New Releases</h2>
         {albumsLoading ? (
-          <p>Loadging albums ...</p>
+          <p>Loading albums ...</p>
         ): (
           <div className="flex space-x-6 px-4"> 
             {albums.map((release) => {

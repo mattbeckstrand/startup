@@ -27,12 +27,12 @@ export async function searchAlbums(token, searchTerm) {
 
 export async function searchSongs(token, searchTerm) {
     const response = await fetch(
-      `https://api.spotify.com/v1/search?q=${encodeURIComponent(searchTerm)}&type=song&limit=10`,
+      `https://api.spotify.com/v1/search?q=${encodeURIComponent(searchTerm)}&type=track&limit=10`,
       {
         headers: { 'Authorization': `Bearer ${token}` }
       }
     );
     
     const data = await response.json();
-    return data.songs.items;
+    return data.tracks.items;  // Changed from data.songs to data.tracks
   }

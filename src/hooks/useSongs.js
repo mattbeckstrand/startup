@@ -10,7 +10,7 @@ export function useSongs() {
         if (!token) return;
 
         try {
-            const response = await fetch('http://localhost:4000/api/songs/newReleases');
+            const response = await fetch('http://localhost:4000/api/songs/samples');
             const dbSongs = await response.json();
             
             if (!Array.isArray(dbSongs)) {
@@ -25,10 +25,10 @@ export function useSongs() {
                     const spotifySongs = await searchSongs(token, `${song.title} ${song.artist}`);
                     return {
                         ...song,
-                        artworkUrl: spotifySongs[0]?.images[0].url || null
+                        artworkUrl: spotifySongs[0]?.album.images[0].url || null
                     };
                     } catch (error) {
-                    console.log('error retrieving songs or artwork')
+                    console.error('error retrieving songs or artwork', error)
                     return { ...song, artworkUrl: null};
                     }
                 })
