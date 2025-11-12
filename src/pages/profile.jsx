@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useMyReviews } from '../hooks/useMyReviews';
+import { useProfile } from '../context/profileContext';
 
 
 export function Profile() {
   const {reviews, loading: reviewsLoading} = useMyReviews();
-  const [profile, setProfile] = useState({});
+  const { profile, profileLoading} = useProfile();
+
   const [followers, setFollowers] = useState();
   const [following, setFollowing] = useState();
 
-
   useEffect(() => {
-    setProfile({id: 'xyz', username: 'mattbeckstrand', displayName: 'Matt Beckstrand', avatarLocation:'/Images/IMG_2769.jpg', bio:'Nothing better than finding a new song'})
     setFollowers(10),
     setFollowing(10)
   }, [])
@@ -21,12 +21,21 @@ export function Profile() {
     return filled + unFilled;
   }
 
+  if (profileLoading) {
+    return <p>Loading profile...</p>;
+  }
+
+  // Or check if profile is null/falsy
+  if (!profile) {
+    return <p>No profile found. Please log in.</p>;
+  }
+
   return (
     <main className="p-4">
       <div className="flex items-center space-x-6 mb-6">
-        <img src={profile.avatarLocation} alt="Profile" className="w-20 h-20 rounded-full" />
+        <img src={profile.avatar_url} alt="Profile" className="w-10 h-10 rounded-full object-cover" />
         <div>
-          <h2 className="text-2xl font-bold">{profile.displayName}</h2>
+          <h2 className="text-2xl font-bold">{profile.display_name}</h2>
           <p className="text-gray-300">{profile.username}</p>
         </div>
         <div className="flex space-x-6 ml-auto">
@@ -42,13 +51,13 @@ export function Profile() {
         ) : ( reviews.map((review) =>
           (<div key={review.id}>
             <div className="flex items-center space-x-2 mb-3">
-            <img src="/Images/ProfileIcon.webp" alt="Profile" width="26" height="26" className="rounded-full" />
-            <span className="font-semibold">{review.username}</span>
+            <img src={review.profiles.avatar_url} alt="Profile" className="w-6 h-6 rounded-full object-cover" />
+            <span className="font-semibold">{review.profiles.username}</span>
           </div>
           <img src={review.artworkUrl} alt={review.title + '-'  + review.artist} width="200" className="rounded-lg mb-2" />
           <p className="font-semibold">{review.title}</p>
           <p className="text-yellow-400">{renderStars(review.rating)}</p>
-          <p className="text-gray-300">{review.text}</p>
+          <p className="text-gray-300">{review.review}</p>
           </div>
           ))
         )}

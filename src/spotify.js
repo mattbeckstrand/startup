@@ -5,7 +5,7 @@ export function useSpotify() {
 
   useEffect(() => {
     // Get token from your backend
-    fetch('http://localhost:4000/api/spotify/token')
+    fetch('/api/spotify/token')
       .then(res => res.json())
       .then(data => setToken(data.access_token));
   }, []);

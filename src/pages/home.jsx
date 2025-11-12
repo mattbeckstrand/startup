@@ -1,10 +1,14 @@
 import React, { useEffect, useState} from 'react';
 import { useAlbums } from '../hooks/useAlbums';
 import { useReviews } from '../hooks/useReviews';
+import { useProfile } from '../context/profileContext';
+import { ReviewCard } from '../components/ReviewCard';
+
 
 export function Home() {
   const { albums, loading: albumsLoading } = useAlbums();
   const { reviews, loading: reviewsLoading} = useReviews();
+  const { profile, loading: profileLoading} = useProfile();
   
   function renderStars(rating) {
     const filled = '★'.repeat(rating);
@@ -33,28 +37,14 @@ export function Home() {
       )}     
     </section>
         <hr/>
-        <div className="p-4">
+        <p className='px-4'>Popular Reviews</p>
+        <div className="p-4 space-y-3 max-w-3xl mx-auto">
 
           {reviewsLoading? (
             <p>Loading Reviews... </p>
-          ): (reviews.map((review) => {
-            return(
-              <div key={review.id}>
-              <div className="flex items-center space-x-2">
-              <img src="/Images/ProfileIcon.webp" alt="Profile" className="w-10 h-10 rounded-full"/>
-              <span>{review.username}</span>
-            </div>
-            <div className="mt-4 inline-block ">
-                <img src={review.artworkUrl} alt={review.title + ' - ' + review.artist} className="w-60 rounded-lg"/>
-                <p>{review.title + ' - ' + review.artist}</p>
-              </div>
-            <div>
-            <p className="mt-2">{renderStars(review.rating)}</p>
-            <p>{review.text}</p>
-            </div>
-            </div>
-            )
-          }))}
+          ): (reviews.map((review) => (
+            <ReviewCard key={review.id} review={review} />
+          )))}
           </div>
         </main>
   );

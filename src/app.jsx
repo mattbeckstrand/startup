@@ -7,17 +7,20 @@ import { Profile } from './pages/profile';
 import { Samples } from './pages/samples';
 import { Home } from './pages/home';
 import { useAuth } from './context/authContext';
+import { useProfile } from './context/profileContext';
 
 export default function App() {
   const { user, isAuthenticated, logout } = useAuth();
+  const { profile, profileLoading } = useProfile();
 
   return (
     <BrowserRouter>
       <div className="min-h-screen flex flex-col text-white" style={{ background: 'rgb(48, 46, 46)' }}>
         <header>
-          <h1 className="text-4xl p-4">Snare Music</h1>
+         
           <nav className="flex items-center justify-between p-4">
-            <div className="flex space-x-6">
+            <div className="flex space-x-6 items-center">
+            <h1 className="text-3xl p-1">Snare</h1>
               <NavLink to="/">Home</NavLink>
               <NavLink to="/samples">Samples</NavLink>
               <NavLink to="/dms">Messages</NavLink>
@@ -26,7 +29,7 @@ export default function App() {
               {isAuthenticated ? (
                 <>
                   <NavLink to="/profile">
-                    <img src="/Images/IMG_2769.jpg" alt="Profile" width="40" height="40" className="rounded-full" />
+                    <img src={profile?.avatar_url} alt="Profile" className="w-10 h-10 rounded-full object-cover" />
                   </NavLink>
                   <button onClick={logout}>Logout</button>
                 </>

@@ -1,41 +1,22 @@
 import { useEffect, useState } from "react";
-import { useSpotify, searchAlbums } from "../spotify";
+import { useSpotify } from "../spotify";
+import { useAuth } from "../context/authContext";
+import { fetchReviews } from "../services/reviewsService";
 
 export function useReviews() {
-    const token = useSpotify();
+    const spotifyToken = useSpotify();
+    const { token: authToken } = useAuth();
     const [reviews, setReviews] = useState([]);
     const [loading, setLoading] = useState(true);
-
+    
     useEffect(() => {
-        const fetchReviewsWithArtwork = async () => {
-            if(!token) return;
+        if (!authToken || !spotifyToken) return;
+        
+        fetchReviews(authToken, spotifyToken)
+            .then(setReviews)
+            .catch(error => console.error('get my reviews failed: ', error))
+            .finally(() => setLoading(false))        
 
-            try{
-                const response = await fetch('/api/songs/reviews');
-                const dbReviews = await response.json();
-
-                const reviewsWithArtwork = await Promise.all(
-                    dbReviews.map(async (review) => {
-                        try{
-                            const spotifyAlbums = await searchAlbums(token, `${review.title} ${review.artist}`);
-                            return{
-                                ...review,
-                                artworkUrl: spotifyAlbums[0]?.images[0].url || null
-                             };
-                        } catch (error) {
-                            console.error('error retrieving artwork for reviews')
-                            return { ...review, artworkUrl: null};
-                        }
-                    })
-                )
-                setReviews(reviewsWithArtwork);
-            } catch (error) {
-                console.error('Failed to fetch Reviews', error)
-            } finally {
-                setLoading(false)
-            }
-        }
-        fetchReviewsWithArtwork();
-    }, [token])
-    return {reviews, loading};
+    }, [spotifyToken, authToken]);
+    return { reviews, loading }; 
 }
