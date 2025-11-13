@@ -14,8 +14,8 @@ router.get('/my', requireAuth, async (req, res) => {
                 username,
                 avatar_url
                 )`)
+            .order('created_at', {ascending: false})
             .eq('user_id', userId)
-            .order('created_at')
         res.json(reviews)
     } catch (error) {
         res.status(500).json({error: 'Failed to fetch user reviews'})
