@@ -6,7 +6,6 @@ const ProfileContext = createContext()
 export function ProfileProvider({ children }) {
     const { profile, loading: profileLoading}  = useProfiles();
 
-
     const value = {
         profile,
         profileLoading, 

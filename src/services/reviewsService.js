@@ -31,7 +31,7 @@ export async function fetchMyReviews(authToken, spotifyToken) {
     return putArtworkWithMultReviews(reviews, spotifyToken);
 }
 
-export async function fetchReviews(authToken, spotifyToken) {
-    const reviews = await getReviews(authToken);
+export async function fetchReviews(spotifyToken) {
+    const reviews = await getReviews();
     return putArtworkWithMultReviews(reviews, spotifyToken);
 }

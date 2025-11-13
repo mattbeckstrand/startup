@@ -16,28 +16,26 @@ export default function App() {
   return (
     <BrowserRouter>
       <div className="min-h-screen flex flex-col text-white" style={{ background: 'rgb(48, 46, 46)' }}>
+        <div className="w-full max-w-6xl mx-auto">
         <header>
          
-          <nav className="flex items-center justify-between p-4">
-            <div className="flex space-x-6 items-center">
-            <h1 className="text-3xl p-1">Snare</h1>
-              <NavLink to="/">Home</NavLink>
-              <NavLink to="/samples">Samples</NavLink>
-              <NavLink to="/dms">Messages</NavLink>
-            </div>
-            <div className="flex space-x-6">
+          <nav className="flex items-baseline justify-center gap-6 p-4">
+              <NavLink to="/" className="text-3xl p-1">Snare</NavLink>
               {isAuthenticated ? (
                 <>
+                  <NavLink to="/samples">Samples</NavLink>
+                  <NavLink to="/dms">Messages</NavLink>
                   <NavLink to="/profile">
-                    <img src={profile?.avatar_url} alt="Profile" className="w-10 h-10 rounded-full object-cover" />
+                    Profile
                   </NavLink>
                   <button onClick={logout}>Logout</button>
                 </>
               ) : (
+                <>
                 <NavLink to="/signin">Sign In</NavLink>
+                <NavLink to="/signin">Create Account</NavLink>
+                </>
               )}
-            
-            </div>
           </nav>
         </header>
         <hr />
@@ -58,6 +56,7 @@ export default function App() {
             <a href="https://github.com/mattbeckstrand/startup" className="hover:text-blue-700">Github</a>
           </div>
         </footer>
+        </div>
       </div>
     </BrowserRouter>
   );

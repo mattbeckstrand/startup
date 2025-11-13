@@ -10,9 +10,9 @@ export function useReviews() {
     const [loading, setLoading] = useState(true);
     
     useEffect(() => {
-        if (!authToken || !spotifyToken) return;
+        if (!spotifyToken) return;
         
-        fetchReviews(authToken, spotifyToken)
+        fetchReviews(spotifyToken)
             .then(setReviews)
             .catch(error => console.error('get my reviews failed: ', error))
             .finally(() => setLoading(false))        

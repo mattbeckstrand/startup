@@ -10,9 +10,7 @@ export async function getMyReviews(authToken) {
 }
 
 export async function getReviews(authToken) {
-    const response = await fetch('/api/reviews/', {
-        headers: { 'Authorization': `Bearer ${authToken}` }
-    });
+    const response = await fetch('/api/reviews/');
 
     if (!response.ok) {
         throw new Error(`Failed to get reviews: ${response.status}`)

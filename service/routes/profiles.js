@@ -21,10 +21,6 @@ router.get('/my', requireAuth, async (req, res) => {
 router.get('/follow-counts', requireAuth, async (req, res) => {
     try {
       const userId = req.user.id;
-      console.log('User ID:', userId)
-      console.log('User ID type:', typeof userId)
-      
-      // Create an authenticated Supabase client using the user's token
       const token = req.headers.authorization.split(' ')[1];
       const supabaseClient = createClient(
         process.env.SUPABASE_URL,
@@ -46,7 +42,6 @@ router.get('/follow-counts', requireAuth, async (req, res) => {
         console.error('RPC Error details:', error);
         throw error;
       }
-      
       res.json(data[0]); 
     } catch (error) {
       console.error('Catch block error:', error);

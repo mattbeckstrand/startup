@@ -34,5 +34,18 @@ export async function searchSongs(token, searchTerm) {
     );
     
     const data = await response.json();
-    return data.tracks.items;  // Changed from data.songs to data.tracks
+    return data.tracks.items;
   }
+
+export async function getNewReleases(token) {
+  const response = await fetch(
+    `https://api.spotify.com/v1/browse/new-releases`, 
+    {
+      headers: { 'Authorization': `Bearer ${token}`}
+    }
+  );
+
+  const data = await response.json();
+  console.log(data)
+  return data.albums;
+}
