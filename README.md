@@ -44,3 +44,7 @@ In a day with so much music being released and so many different options to list
 
 ## Service Deliverable:
 - For this deliverable I went through and added in the backend. I added functions for auth, returning data for new releases, reviews and also used spotify as my third party service to display artwork. I then edited the front end to use those endpoints to display data. My protected endpoint is the endpoint where it returns only your reviews, this shown on profile. 
+
+
+## DB Deliverable:
+- I went through and did a lot of new styling, now that I have real data in it I wanted to make sure that it looked a little bit more usable. I got the requirements done for the db deliverable, but there is still a lot of work here to do before demo day. Of course there is a chance I just do a little bit and get it working then once I get credit for this and want to use it in real life, I will use AI to code it like I do for every other real life project I work on, like the ios app version of this on the app store. 

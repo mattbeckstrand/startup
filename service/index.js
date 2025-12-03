@@ -1,3 +1,5 @@
+const { peerProxy } = require('./peerProxy');
+
 const cors = require('cors');
 const express = require('express');
 const app = express();
@@ -24,6 +26,7 @@ app.use((req, res) => {
   res.status(404).send({ msg: 'Not found' });
 });
 
-app.listen(port, () => {
+const httpServer = app.listen(port, () => {
   console.log(`Listening on port ${port}`);
 });
+peerProxy(httpServer);

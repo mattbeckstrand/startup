@@ -16,8 +16,15 @@ router.get('/my', requireAuth, async (req, res) => {
                 )`)
             .order('created_at', {ascending: false})
             .eq('user_id', userId)
-        res.json(reviews)
+        
+        if (error) {
+            console.error('Supabase error:', error);
+            return res.status(500).json({error: 'Failed to fetch user reviews', details: error.message})
+        }
+        
+        res.json(reviews || [])
     } catch (error) {
+        console.error('Server error:', error);
         res.status(500).json({error: 'Failed to fetch user reviews'})
     }
 });
@@ -28,17 +35,22 @@ router.get('/', async (req, res) => {
             .from('reviews')
             .select(`
                 *,
-                profiles!user_id (
+                profiles (
                 username,
                 avatar_url
                 )`)
             .order('created_at', {ascending: false})
             .limit(50)
+        
+        if (error) {
+            console.error('Supabase error:', error);
+            return res.status(500).json({error: 'Failed to fetch reviews', details: error.message})
+        }
             
-        console.log(reviews)
-        res.json(reviews)
+        res.json(reviews || [])
     } catch (error) {
-        res.status(500).json({error: 'Failed to fetch user reviews'})
+        console.error('Server error:', error);
+        res.status(500).json({error: 'Failed to fetch reviews'})
     }
 });
 
