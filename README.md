@@ -48,3 +48,6 @@ In a day with so much music being released and so many different options to list
 
 ## DB Deliverable:
 - I went through and did a lot of new styling, now that I have real data in it I wanted to make sure that it looked a little bit more usable. I got the requirements done for the db deliverable, but there is still a lot of work here to do before demo day. Of course there is a chance I just do a little bit and get it working then once I get credit for this and want to use it in real life, I will use AI to code it like I do for every other real life project I work on, like the ios app version of this on the app store. 
+
+## Websocket Deliverable:
+- Added the peerProxy.js file in the backend, connected to the server in the index.js file, then went to messages in the front end and connected it so that when you send a message, it broadcasts it to everyone in the app. To test, go to messages page and enter in a message then click send. If you have another tab open it will show up under the other messages.
