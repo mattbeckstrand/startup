@@ -8,7 +8,9 @@ export function Dms() {
   const { user } = useAuth();
 
   useEffect(() => {
-    const ws = new WebSocket('ws://localhost:4000/ws');
+    // Use secure wss:// in production, ws:// for local development
+    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    const ws = new WebSocket(`${protocol}//${window.location.host}/ws`);
 
     ws.onopen = () => {
       console.log('WebSocket connected!');
