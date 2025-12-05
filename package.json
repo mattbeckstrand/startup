@@ -30,6 +30,7 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.79.0",
+    "@tanstack/react-query": "^5.90.12",
     "jsonwebtoken": "^9.0.2",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",

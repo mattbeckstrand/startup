@@ -1,64 +1,260 @@
 const express = require('express');
 const router = express.Router();
+const { supabase } = require('../supabaseClient');
 const { requireAuth } = require('../middleware/auth');
 
+// Get Spotify token for API calls
+async function getSpotifyToken() {
+  const clientId = process.env.SPOTIFY_CLIENT_ID;
+  const clientSecret = process.env.SPOTIFY_CLIENT_SECRET;
 
-router.get('/newReleases', async (req, res) => {
-    try{
-        const songs = [
-            { id: 1, title: 'Play', artist: 'Ed Sheeran' },
-            { id: 2, title: 'Swag', artist: 'Justin Bieber' },
-            { id: 3, title: 'Blonde', artist: 'Frank Ocean' },
-            { id: 4, title: 'Beloved', artist: 'GIVĒON' }
-          ];
-          res.json(songs)
-    } catch (error) {
-        res.status(500).json({error: 'Failed to fetch songs'})
+  if (!clientId || !clientSecret) {
+    throw new Error('Spotify credentials not configured');
+  }
+
+  const response = await fetch('https://accounts.spotify.com/api/token', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Authorization': 'Basic ' + Buffer.from(clientId + ':' + clientSecret).toString('base64')
+    },
+    body: 'grant_type=client_credentials'
+  });
+
+  const data = await response.json();
+  return data.access_token;
+}
+
+// IMPORTANT: Static routes MUST come before parameterized routes
+
+// Search songs via Spotify
+router.get('/search', async (req, res) => {
+  try {
+    const { q, limit = 20 } = req.query;
+
+    if (!q) {
+      return res.status(400).json({ error: 'Search query required' });
     }
+
+    const token = await getSpotifyToken();
+
+    const response = await fetch(
+      `https://api.spotify.com/v1/search?q=${encodeURIComponent(q)}&type=track&limit=${limit}`,
+      {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error('Spotify API error');
+    }
+
+    const data = await response.json();
+    
+    const songs = data.tracks?.items?.map(track => ({
+      id: track.id,
+      spotify_id: track.id,
+      title: track.name,
+      artist: track.artists.map(a => a.name).join(', '),
+      album: track.album.name,
+      album_art_url: track.album.images[0]?.url,
+      duration: track.duration_ms / 1000,
+      preview_url: track.preview_url,
+      is_explicit: track.explicit,
+      external_urls: { spotify: track.external_urls.spotify },
+      release_date: track.album.release_date
+    })) || [];
+
+    res.json(songs);
+  } catch (error) {
+    console.error('Search error:', error);
+    res.status(500).json({ error: 'Failed to search songs' });
+  }
 });
 
-// Get ALL reviews (public endpoint)
-router.get('/reviews', async (req, res) => {
-    try{
-        const allReviews = [
-            {id: 1, username: 'mattbeck', userEmail: 'matt@example.com', title:'Swag', artist:'Justin Bieber', album: 'Swag', rating: 4, artworkLocation: '/Images/Swag.png', text:"I thought this album was good but I didn't think it was amazing. Justin Bieber had 3 good songs in this."},
-            {id: 2, username: 'pwatts', userEmail: 'pwatts@example.com', title:'Swag II', artist:'Justin Bieber', album: 'Swag II', rating: 2, artworkLocation: '/Images/Swag.png', text:"Has some good parts but ultimately not as good as Swag I"},
-            {id: 3, username: 'mattbeck', userEmail: 'matt@example.com', title:'1989', artist:'Taylor Swift', album: '1989', rating: 5, artworkLocation: '/Images/1989SwiftAlbum.webp', text:"Classic Taylor! This album is perfect for any mood."}
-        ];
+// Get new releases from Spotify
+router.get('/new-releases', async (req, res) => {
+  try {
+    const limit = parseInt(req.query.limit) || 20;
+    const token = await getSpotifyToken();
+
+    const response = await fetch(
+      `https://api.spotify.com/v1/browse/new-releases?limit=${limit}`,
+      {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error('Spotify API error');
+    }
+
+    const data = await response.json();
+    res.json(data.albums?.items || []);
+  } catch (error) {
+    // Return empty array if Spotify not configured
+    res.json([]);
+  }
+});
+
+// Create or upsert song (returns canonical ID)
+router.post('/', async (req, res) => {
+  try {
+    const { 
+      title, 
+      artist, 
+      album, 
+      album_art_url, 
+      duration, 
+      spotify_id, 
+      apple_music_id,
+      preview_url,
+      external_urls,
+      is_explicit,
+      release_date
+    } = req.body;
+
+    if (!title || !artist) {
+      return res.status(400).json({ error: 'Title and artist are required' });
+    }
+
+    // If spotify_id provided, try to find existing
+    if (spotify_id) {
+      const { data: existing } = await supabase
+        .from('songs')
+        .select('*')
+        .eq('spotify_id', spotify_id)
+        .single();
+
+      if (existing) {
+        return res.json(existing);
+      }
+    }
+
+    // Create new song
+    const { data: song, error } = await supabase
+      .from('songs')
+      .insert({
+        title,
+        artist,
+        album,
+        album_art_url,
+        duration,
+        spotify_id,
+        apple_music_id,
+        preview_url,
+        external_urls: external_urls || {},
+        is_explicit: is_explicit || false,
+        release_date
+      })
+      .select()
+      .single();
+
+    if (error) {
+      // Might be duplicate spotify_id race condition
+      if (error.code === '23505' && spotify_id) {
+        const { data: existing } = await supabase
+          .from('songs')
+          .select('*')
+          .eq('spotify_id', spotify_id)
+          .single();
         
-        res.json(allReviews)
-    } catch (error) {
-        res.status(500).json({error: 'Failed to fetch reviews'})
+        if (existing) {
+          return res.json(existing);
+        }
+      }
+      return res.status(500).json({ error: 'Failed to create song' });
     }
+
+    res.status(201).json(song);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to create song' });
+  }
 });
 
-router.get('/reviews/my', requireAuth, async (req, res) => {
-    try{
-        const userEmail = req.user.email;
-        const allReviews = [
-            {id: 1, username: 'mattbeck', userEmail: 'matt.beckstrand@gmail.com', title:'Dasies', artist:'Justin Bieber', album: 'Swag', rating: 4, text:"I thought this album was good but I didn't think it was amazing. Justin Bieber had 3 good songs in this."},
-            {id: 2, username: 'pwatts', userEmail: 'pwatts@example.com', title:'Speed Demon', artist:'Justin Bieber', album: 'Swag II', rating: 2, text:"Has some good parts but ultimately not as good as Swag I"},
-            {id: 3, username: 'mattbeck', userEmail: 'matt.beckstrand@gmail.com', title:'Blank Space', artist:'Taylor Swift', album: '1989', rating: 5, text:"Classic Taylor! This album is perfect for any mood."}
-        ];
-        const userReviews = allReviews.filter(review => review.userEmail === userEmail);
-        res.json(userReviews)
-    } catch (error) {
-        res.status(500).json({error: 'Failed to fetch user reviews'})
+// Get song by Spotify ID
+router.get('/spotify/:spotifyId', async (req, res) => {
+  try {
+    const { spotifyId } = req.params;
+
+    // First check local database
+    const { data: existingSong } = await supabase
+      .from('songs')
+      .select('*')
+      .eq('spotify_id', spotifyId)
+      .single();
+
+    if (existingSong) {
+      return res.json(existingSong);
     }
+
+    // Fetch from Spotify
+    const token = await getSpotifyToken();
+
+    const response = await fetch(
+      `https://api.spotify.com/v1/tracks/${spotifyId}`,
+      {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      }
+    );
+
+    if (!response.ok) {
+      return res.status(404).json({ error: 'Song not found' });
+    }
+
+    const track = await response.json();
+
+    const song = {
+      spotify_id: track.id,
+      title: track.name,
+      artist: track.artists.map(a => a.name).join(', '),
+      album: track.album.name,
+      album_art_url: track.album.images[0]?.url,
+      duration: track.duration_ms / 1000,
+      preview_url: track.preview_url,
+      is_explicit: track.explicit,
+      external_urls: { spotify: track.external_urls.spotify },
+      release_date: track.album.release_date
+    };
+
+    // Save to database
+    const { data: savedSong } = await supabase
+      .from('songs')
+      .insert(song)
+      .select()
+      .single();
+
+    res.json(savedSong || song);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch song' });
+  }
 });
 
-router.get('/samples', async (req, res) => {
-    try{
-        const hcSamples = [
-            {title:'A Little More', album:'Play', artist:'Ed Sheeran', artworkLocation: '/Images/play.webp' },
-            {title:'Daisies', album:'Swag', artist:'Justin Bieber', artworkLocation: '/Images/Swag.png' }
-          ];
-          res.json(hcSamples)
-    } catch (error) {
-        res.status(500).json({error: 'Failed to fetch reviews'})
+// Get song by ID - MUST be last because it catches all patterns
+router.get('/:songId', async (req, res) => {
+  try {
+    const { songId } = req.params;
+
+    const { data: song, error } = await supabase
+      .from('songs')
+      .select('*')
+      .eq('id', songId)
+      .single();
+
+    if (error || !song) {
+      return res.status(404).json({ error: 'Song not found' });
     }
+
+    res.json(song);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch song' });
+  }
 });
 
-
-
-module.exports = router
+module.exports = router;

@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
+import React, { createContext, useState, useContext, useEffect, useCallback } from 'react';
 
 const AuthContext = createContext()
 
@@ -8,15 +8,49 @@ export function AuthProvider({ children }) {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const savedUser = localStorage.getItem('user');
-        const savedToken = localStorage.getItem('token');
-        if (savedUser) {
-            setUser(JSON.parse(savedUser));
-        }
-        if (savedToken) {
-            setToken(savedToken);
-        }
-        setLoading(false);
+        const initializeAuth = async () => {
+            const savedUser = localStorage.getItem('user');
+            const savedToken = localStorage.getItem('token');
+            
+            // If we have both user and token, validate the token
+            if (savedUser && savedToken) {
+                try {
+                    // Validate token by making a simple authenticated request
+                    const response = await fetch('/api/profiles/me', {
+                        headers: {
+                            'Authorization': `Bearer ${savedToken}`
+                        }
+                    });
+                    
+                    if (response.status === 401) {
+                        // Token is invalid/expired - clear everything
+                        localStorage.removeItem('user');
+                        localStorage.removeItem('token');
+                        setUser(null);
+                        setToken(null);
+                    } else if (response.ok) {
+                        // Token is valid - restore state
+                        setUser(JSON.parse(savedUser));
+                        setToken(savedToken);
+                    } else {
+                        // Other error (e.g., 500) - restore state anyway
+                        // Token validation will happen on next API call
+                        setUser(JSON.parse(savedUser));
+                        setToken(savedToken);
+                    }
+                } catch (error) {
+                    // Network error - restore state anyway since it might be temporary
+                    // Token validation will happen on next API call
+                    console.warn('Could not validate token on load (network error):', error);
+                    setUser(JSON.parse(savedUser));
+                    setToken(savedToken);
+                }
+            }
+            
+            setLoading(false);
+        };
+        
+        initializeAuth();
     }, []);
 
     const login = async (email, password) => {
@@ -68,12 +102,19 @@ export function AuthProvider({ children }) {
         return data.user;
     }
 
-    const logout = () => {
+    const logout = useCallback(() => {
         setUser(null);
         setToken(null);
         localStorage.removeItem('user');
         localStorage.removeItem('token');
-    }
+    }, []);
+
+    // Handle unauthorized responses - call this when you get a 401
+    const handleUnauthorized = useCallback(() => {
+        logout();
+        // Redirect to signin page
+        window.location.href = '/signin';
+    }, [logout]);
 
     const value = {
         user,
@@ -82,7 +123,8 @@ export function AuthProvider({ children }) {
         loading, 
         login,
         signup,
-        logout
+        logout,
+        handleUnauthorized
     };
 
     return (
@@ -91,11 +133,12 @@ export function AuthProvider({ children }) {
         </AuthContext.Provider>
     );
 }
-    export function useAuth() {
-        const context = useContext(AuthContext);
 
-        if (!context) {
-            throw new Error('useAuth must be used within an auth provider')
-        }
-        return context;
+export function useAuth() {
+    const context = useContext(AuthContext);
+
+    if (!context) {
+        throw new Error('useAuth must be used within an auth provider')
     }
+    return context;
+}
